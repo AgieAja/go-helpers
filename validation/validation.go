@@ -1,13 +1,12 @@
 package validation
 
 import (
+	"encoding/base64"
 	"regexp"
 	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
-
-	"google.golang.org/api/oauth2/v2"
-	"net/http"
+	"os"
 )
 
 //CheckPasswordHash - validate encrypt password
@@ -16,7 +15,7 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-//HashPassword - Encryp password
+//HashPassword - Encrypt password
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
@@ -40,16 +39,14 @@ func IsNumeric(strNoHp string) bool {
 	return true
 }
 
-//VerifyIDTokenGoogle - verify id token google
-func VerifyIDTokenGoogle(idToken string) (*oauth2.Tokeninfo, error) {
-	httpClient := &http.Client{}
-	oauth2Service, err := oauth2.New(httpClient)
-	tokenInfoCall := oauth2Service.Tokeninfo()
-	tokenInfoCall.IdToken(idToken)
-	tokenInfo, err := tokenInfoCall.Do()
-	if err != nil {
-		return nil, err
+//SignatureSocialLogin - verify social login
+func SignatureSocialLogin(email, name, sig string) bool {
+	clientSecret := os.Getenv("CLIENT_SECRET")
+	myToken := email + name + clientSecret
+	mySignature := base64.StdEncoding.EncodeToString([]byte(myToken))
+	if mySignature != sig {
+		return false
 	}
 
-	return tokenInfo, nil
+	return true
 }
