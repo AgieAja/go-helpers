@@ -5,6 +5,9 @@ import (
 	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
+
+	"google.golang.org/api/oauth2/v2"
+	"net/http"
 )
 
 //CheckPasswordHash - validate encrypt password
@@ -35,4 +38,18 @@ func IsNumeric(strNoHp string) bool {
 		return false
 	}
 	return true
+}
+
+//VerifyIDTokenGoogle - verify id token google
+func VerifyIDTokenGoogle(idToken string) (*oauth2.Tokeninfo, error) {
+	httpClient := &http.Client{}
+	oauth2Service, err := oauth2.New(httpClient)
+	tokenInfoCall := oauth2Service.Tokeninfo()
+	tokenInfoCall.IdToken(idToken)
+	tokenInfo, err := tokenInfoCall.Do()
+	if err != nil {
+		return nil, err
+	}
+
+	return tokenInfo, nil
 }
