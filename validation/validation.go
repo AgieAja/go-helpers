@@ -2,11 +2,10 @@ package validation
 
 import (
 	"encoding/base64"
-	"regexp"
-	"strconv"
-
 	"golang.org/x/crypto/bcrypt"
 	"os"
+	"regexp"
+	"strconv"
 )
 
 //CheckPasswordHash - validate encrypt password
