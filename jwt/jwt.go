@@ -2,9 +2,16 @@ package jwt
 
 import (
 	"errors"
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
+	"os"
+	"time"
+)
+
+var (
+	applicationName  = os.Getenv("APP_NAME_JWT")
+	loginExpDuration = time.Duration(24*60) * time.Minute
+	jwtSigningMethod = jwt.SigningMethodHS256
+	jwtSignatureKey  = []byte(os.Getenv("APP_SECRET_KEY_JWT"))
 )
 
 //MyClaims - struct jwt
@@ -14,14 +21,10 @@ type MyClaims struct {
 }
 
 //GenerateTokenJwt - generate token jwt
-func GenerateTokenJwt(userID uint, appName, appSecretKey string) (string, error) {
-	loginExpDuration := time.Duration(24*60) * time.Minute
-	jwtSigningMethod := jwt.SigningMethodHS256
-	jwtSignatureKey := []byte(appSecretKey)
-
+func GenerateTokenJwt(userID uint) (string, error) {
 	claims := MyClaims{
 		StandardClaims: jwt.StandardClaims{
-			Issuer:    appName,
+			Issuer:    applicationName,
 			ExpiresAt: time.Now().Add(loginExpDuration).Unix(),
 		},
 		UserID: userID,
