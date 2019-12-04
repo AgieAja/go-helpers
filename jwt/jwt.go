@@ -9,7 +9,6 @@ import (
 
 var (
 	applicationName  = os.Getenv("APP_NAME_JWT")
-	loginExpDuration = time.Duration(24*60) * time.Minute
 	jwtSigningMethod = jwt.SigningMethodHS256
 	jwtSignatureKey  = []byte(os.Getenv("APP_SECRET_KEY_JWT"))
 )
@@ -21,7 +20,7 @@ type MyClaims struct {
 }
 
 //GenerateTokenJwt - generate token jwt
-func GenerateTokenJwt(userID uint) (string, error) {
+func GenerateTokenJwt(userID uint, loginExpDuration time.Duration) (string, error) {
 	claims := MyClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    applicationName,
