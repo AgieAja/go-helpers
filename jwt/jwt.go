@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	applicationName  = os.Getenv("APP_NAME_JWT")
+	applicationName  = os.Getenv("APP_NAME")
 	jwtSigningMethod = jwt.SigningMethodHS256
 	jwtSignatureKey  = []byte(os.Getenv("APP_SECRET_KEY_JWT"))
 )
