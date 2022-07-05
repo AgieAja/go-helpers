@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"errors"
-	"github.com/dgrijalva/jwt-go"
 	"os"
 	"time"
 )
@@ -16,17 +15,19 @@ var (
 //MyClaims - struct jwt
 type MyClaims struct {
 	jwt.StandardClaims
-	UserID uint `json:"user_id"`
+	UserID     uint     `json:"user_id"`
+	Attributes []string `json:"attributes"`
 }
 
 //GenerateTokenJwt - generate token jwt
-func GenerateTokenJwt(userID uint, loginExpDuration time.Duration) (string, error) {
+func GenerateTokenJwt(userID uint, loginExpDuration time.Duration, attributes []string) (string, error) {
 	claims := MyClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    applicationName,
 			ExpiresAt: time.Now().Add(loginExpDuration).Unix(),
 		},
-		UserID: userID,
+		UserID:     userID,
+		Attributes: attributes,
 	}
 
 	token := jwt.NewWithClaims(
